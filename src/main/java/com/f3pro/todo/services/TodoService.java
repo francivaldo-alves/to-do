@@ -2,6 +2,7 @@ package com.f3pro.todo.services;
 
 import com.f3pro.todo.domain.Todo;
 import com.f3pro.todo.repositories.TodoRepository;
+import com.f3pro.todo.services.exceptions.ObjectNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +16,8 @@ public class TodoService {
 
     public Todo findById(Integer id) {
         Optional<Todo> obj = repository.findById(id);
-        return obj.orElse(null);
+        return obj.orElseThrow(() -> new ObjectNotFoundException(
+                "Objeto não localizado! Id: " + id + ",Tipo" + Todo.class.getName()));
     }
 
     public List<Todo> findAllOpen() {
@@ -35,7 +37,7 @@ public class TodoService {
 
     public Todo create(Todo obj) {
         obj.setId(null);
-        return  repository.save(obj);
+        return repository.save(obj);
     }
 
     public void delete(Integer id) {
